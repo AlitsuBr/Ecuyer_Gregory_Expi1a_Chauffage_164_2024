@@ -15,17 +15,17 @@ class FormWTFAjouterGenres(FlaskForm):
         Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
-    nom_genre_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_genre_wtf = StringField("Insérer le nom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                   Regexp(nom_genre_regexp,
+    nom_util_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
+    nom_util_wtf = StringField("Insérer le nom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                                   Regexp(nom_util_regexp,
                                                                           message="Pas de chiffres, de caractères "
                                                                                   "spéciaux, "
                                                                                   "d'espace à double, de double "
                                                                                   "apostrophe, de double trait union")
                                                                    ])
-    prenom_genre_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    prenom_genre_wtf = StringField("Insérer le prénom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                         Regexp(prenom_genre_regexp,
+    prenom_util_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
+    prenom_util_wtf = StringField("Insérer le prénom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                                         Regexp(prenom_util_regexp,
                                                                                 message="Pas de chiffres, de caractères "
                                                                                         "spéciaux, "
                                                                                         "d'espace à double, de double "

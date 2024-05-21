@@ -19,9 +19,9 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 """
     Auteur : OM 2021.03.16
     Définition d'une "route" /genres_afficher
-    
+
     Test : ex : http://127.0.0.1:5575/genres_afficher
-    
+
     Paramètres : order_by : ASC : Ascendant, DESC : Descendant
                 id_genre_sel = 0 >> tous les genres.
                 id_genre_sel = "n" affiche le genre dont l'id est "n"
@@ -78,13 +78,13 @@ def genres_afficher(order_by, id_genre_sel):
 """
     Auteur : OM 2021.03.22
     Définition d'une "route" /genres_ajouter
-    
+
     Test : ex : http://127.0.0.1:5575/genres_ajouter
-    
+
     Paramètres : sans
-    
+
     But : Ajouter un genre pour un film
-    
+
     Remarque :  Dans le champ "name_genre_html" du formulaire "genres/genres_ajouter.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
@@ -101,12 +101,16 @@ def genres_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                nom_genre_wtf = form.nom_genre_wtf.data
-                nom_genre = nom_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": nom_genre}
+                nom_util = form.nom_util_wtf.data
+                nom_util = nom_util.lower()
+                prenom_util = form.prenom_util_wtf.data
+                valeurs_insertion_dictionnaire = {"value_nom_util": nom_util,
+                                                  "value_prenom_util": prenom_util,
+                                                  }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
                 #`t_client` (`nom`)
                 strsql_insert_genre = """INSERT INTO t_client (nom,prenom) VALUES (NULL,%(value_intitule_genre)s) """
+
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
@@ -124,17 +128,16 @@ def genres_ajouter_wtf():
     return render_template("genres/genres_ajouter_wtf.html", form=form)
 
 
-
 """
     Auteur : OM 2021.03.29
     Définition d'une "route" /genre_update
-    
+
     Test : ex cliquer sur le menu "genres" puis cliquer sur le bouton "EDIT" d'un "genre"
-    
+
     Paramètres : sans
-    
+
     But : Editer(update) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
-    
+
     Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "genres/genre_update_wtf.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
@@ -206,13 +209,13 @@ def genre_update_wtf():
 """
     Auteur : OM 2021.04.08
     Définition d'une "route" /genre_delete
-    
+
     Test : ex. cliquer sur le menu "genres" puis cliquer sur le bouton "DELETE" d'un "genre"
-    
+
     Paramètres : sans
-    
+
     But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
-    
+
     Remarque :  Dans le champ "nom_genre_delete_wtf" du formulaire "genres/genre_delete_wtf.html",
                 le contrôle de la saisie est désactivée. On doit simplement cliquer sur "DELETE"
 """

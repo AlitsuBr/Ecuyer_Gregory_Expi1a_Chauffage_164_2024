@@ -12,16 +12,16 @@
 				{{ form.hidden_tag() }}
 				<div class="form-group">
 					<p>
-						{{ form.nom_genre_wtf.label }}<br>
-						{{ form.nom_genre_wtf(size=32) }}<br>
-						{% for error in form.nom_genre_wtf.errors %}
+						{{ form.nom_util_wtf.label }}<br>
+						{{ form.nom_util_wtf(size=32) }}<br>
+						{% for error in form.nom_util_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>
 					<p>
-						{{ form.prenom_genre_wtf.label }}<br>
-						{{ form.prenom_genre_wtf(size=32) }}<br>
-						{% for error in form.prenom_genre_wtf.errors %}
+						{{ form.prenom_util_wtf.label }}<br>
+						{{ form.prenom_util_wtf(size=32) }}<br>
+						{% for error in form.prenom_util_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>
