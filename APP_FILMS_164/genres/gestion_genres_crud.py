@@ -109,7 +109,7 @@ def genres_ajouter_wtf():
                                                   }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
                 #`t_client` (`nom`)
-                strsql_insert_genre = """INSERT INTO t_client (nom,prenom) VALUES (NULL,%(value_nom_util)%(value_prenom_util)s) """
+                strsql_insert_genre = """INSERT INTO t_client (id_client,nom,prenom) VALUES (NULL,%(value_nom_util)s,%(value_prenom_util)s) """
 
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
