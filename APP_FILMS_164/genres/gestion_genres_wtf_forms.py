@@ -16,7 +16,7 @@ class FormWTFAjouterGenres(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
     nom_util_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_util_wtf = StringField("Insérer le nom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+    nom_util_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                                    Regexp(nom_util_regexp,
                                                                           message="Pas de chiffres, de caractères "
                                                                                   "spéciaux, "
@@ -24,14 +24,30 @@ class FormWTFAjouterGenres(FlaskForm):
                                                                                   "apostrophe, de double trait union")
                                                                    ])
     prenom_util_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    prenom_util_wtf = StringField("Insérer le prénom du client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+    prenom_util_wtf = StringField("Prénom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                                          Regexp(prenom_util_regexp,
                                                                                 message="Pas de chiffres, de caractères "
                                                                                         "spéciaux, "
                                                                                         "d'espace à double, de double "
                                                                                         "apostrophe, de double trait union")
                                                                          ])
+
+    adresse_util_wtf = StringField("Adresse",
+                                  validators=[Length(min=2, max=20, message="min 2 max 20"),
+
+                                              ])
+
+    telephone_util_wtf = StringField("Numero Tel.",
+                                   validators=[Length(min=2, max=20, message="min 2 max 20"),
+
+                                               ])
+
+    email_util_wtf = StringField("Email",
+                                     validators=[Length(min=2, max=20, message="min 2 max 20"),
+
+                                                 ])
     submit = SubmitField("Enregistrer Client")
+
 
 
 class FormWTFUpdateGenre(FlaskForm):

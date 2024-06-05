@@ -19,9 +19,9 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 """
     Auteur : OM 2021.03.16
     Définition d'une "route" /genres_afficher
-
+    
     Test : ex : http://127.0.0.1:5575/genres_afficher
-
+    
     Paramètres : order_by : ASC : Ascendant, DESC : Descendant
                 id_genre_sel = 0 >> tous les genres.
                 id_genre_sel = "n" affiche le genre dont l'id est "n"
@@ -78,13 +78,13 @@ def genres_afficher(order_by, id_genre_sel):
 """
     Auteur : OM 2021.03.22
     Définition d'une "route" /genres_ajouter
-
+    
     Test : ex : http://127.0.0.1:5575/genres_ajouter
-
+    
     Paramètres : sans
-
+    
     But : Ajouter un genre pour un film
-
+    
     Remarque :  Dans le champ "name_genre_html" du formulaire "genres/genres_ajouter.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
@@ -102,15 +102,26 @@ def genres_ajouter_wtf():
         try:
             if form.validate_on_submit():
                 nom_util = form.nom_util_wtf.data
-                nom_util = nom_util.lower()
                 prenom_util = form.prenom_util_wtf.data
-                valeurs_insertion_dictionnaire = {"value_nom_util": nom_util,
-                                                  "value_prenom_util": prenom_util,
-                                                  }
-                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
-                #`t_client` (`nom`)
-                strsql_insert_genre = """INSERT INTO t_client (id_client,nom,prenom) VALUES (NULL,%(value_nom_util)s,%(value_prenom_util)s) """
+                adresse_util = form.adresse_util_wtf.data
+                telephone_util = form.telephone_util_wtf.data
+                email_util = form.email_util_wtf.data
 
+                # Dictionnaire pour les valeurs à insérer
+                valeurs_insertion_dictionnaire = {
+                    "value_nom_util": nom_util,
+                    "value_prenom_util": prenom_util,
+                    "value_adresse_util": adresse_util,
+                    "value_telephone_util": telephone_util,
+                    "value_email_util": email_util
+                }
+                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
+
+                # Requête SQL pour insérer les données dans la table `t_client`
+                strsql_insert_genre = """
+                    INSERT INTO t_client (nom, prenom, adresse, telephone, email)
+                    VALUES (%(value_nom_util)s, %(value_prenom_util)s, %(value_adresse_util)s, %(value_telephone_util)s, %(value_email_util)s)
+                """
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
@@ -128,16 +139,18 @@ def genres_ajouter_wtf():
     return render_template("genres/genres_ajouter_wtf.html", form=form)
 
 
+
+
 """
     Auteur : OM 2021.03.29
     Définition d'une "route" /genre_update
-
+    
     Test : ex cliquer sur le menu "genres" puis cliquer sur le bouton "EDIT" d'un "genre"
-
+    
     Paramètres : sans
-
+    
     But : Editer(update) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
-
+    
     Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "genres/genre_update_wtf.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
@@ -209,13 +222,13 @@ def genre_update_wtf():
 """
     Auteur : OM 2021.04.08
     Définition d'une "route" /genre_delete
-
+    
     Test : ex. cliquer sur le menu "genres" puis cliquer sur le bouton "DELETE" d'un "genre"
-
+    
     Paramètres : sans
-
+    
     But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
-
+    
     Remarque :  Dans le champ "nom_genre_delete_wtf" du formulaire "genres/genre_delete_wtf.html",
                 le contrôle de la saisie est désactivée. On doit simplement cliquer sur "DELETE"
 """
@@ -252,16 +265,18 @@ def genre_delete_wtf():
                 valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
-                str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_genre WHERE id_genre = %(value_id_genre)s"""
-                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
-                # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
+                str_sql_delete_client_genre_facturation = """DELETE FROM t_client_avoir_t_facturation WHERE fk_client = %(value_id_genre)s"""
+                str_sql_delete_client_genre_installation = """DELETE FROM t_client_avoir_t_installation WHERE fk_client = %(value_id_genre)s"""
+                str_sql_delete_idgenre = """DELETE FROM t_client WHERE id_client = %(value_id_genre)s"""
+                # Manière brutale d'effacer d'abord les dépendances dans "t_client_avoir_t_facturation" et "t_client_avoir_t_installation"
+                # Ensuite on peut effacer le client vu qu'il n'est plus "lié" (INNODB)
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_client_genre_facturation, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_client_genre_installation, valeur_delete_dictionnaire)
                     mconn_bd.execute(str_sql_delete_idgenre, valeur_delete_dictionnaire)
 
-                flash(f"Genre définitivement effacé !!", "success")
-                print(f"Genre définitivement effacé !!")
+                flash(f"Client définitivement effacé !!", "success")
+                print(f"Client définitivement effacé !!")
 
                 # afficher les données
                 return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
@@ -270,11 +285,9 @@ def genre_delete_wtf():
             valeur_select_dictionnaire = {"value_id_genre": id_genre_delete}
             print(id_genre_delete, type(id_genre_delete))
 
-            # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film 
-                                            INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
-                                            INNER JOIN t_genre ON t_genre_film.fk_genre = t_genre.id_genre
-                                            WHERE fk_genre = %(value_id_genre)s"""
+            # Requête qui affiche toutes les factures qui ont le client que l'utilisateur veut effacer
+            str_sql_genres_films_delete = """SELECT id_facture, montant, date_facturation, statut_paiement FROM t_facturation
+                                             WHERE fk_client = %(value_id_genre)s"""
 
             with DBconnection() as mydb_conn:
                 mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
@@ -285,18 +298,18 @@ def genre_delete_wtf():
                 # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
                 session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
-                # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_genre = "SELECT id_genre, intitule_genre FROM t_genre WHERE id_genre = %(value_id_genre)s"
+                # Opération sur la BD pour récupérer "id_client" et "nom" de la "t_client"
+                str_sql_id_genre = "SELECT id_client, nom FROM t_client WHERE id_client = %(value_id_genre)s"
 
                 mydb_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
                 # Une seule valeur est suffisante "fetchone()",
-                # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
+                # vu qu'il n'y a qu'un seul champ "nom client" pour l'action DELETE
                 data_nom_genre = mydb_conn.fetchone()
                 print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                      data_nom_genre["intitule_genre"])
+                      data_nom_genre["nom"])
 
             # Afficher la valeur sélectionnée dans le champ du formulaire "genre_delete_wtf.html"
-            form_delete.nom_genre_delete_wtf.data = data_nom_genre["intitule_genre"]
+            form_delete.nom_genre_delete_wtf.data = data_nom_genre["nom"]
 
             # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
             btn_submit_del = False
@@ -310,3 +323,6 @@ def genre_delete_wtf():
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
                            data_films_associes=data_films_attribue_genre_delete)
+
+
+
