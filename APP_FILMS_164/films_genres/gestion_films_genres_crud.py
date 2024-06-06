@@ -96,75 +96,55 @@ def edit_genre_film_selected():
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                strsql_genres_afficher = """SELECT id_employer, id_employer FROM t_client ORDER BY id_employer ASC"""
-                mc_afficher.execute(strsql_genres_afficher)
-            data_genres_all = mc_afficher.fetchall()
-            print("dans edit_genre_film_selected ---> data_genres_all", data_genres_all)
+                # Sélection des employés disponibles
+                strsql_employes = """SELECT id_employer, prenom_employer, nom_employer FROM t_employer ORDER BY nom_employer ASC"""
+                mc_afficher.execute(strsql_employes)
+                data_employes = mc_afficher.fetchall()
+                print("Employés disponibles :", data_employes)
 
-            # Récupère la valeur de "id_film" du formulaire html "films_genres_afficher.html"
-            # l'utilisateur clique sur le bouton "Modifier" et on récupère la valeur de "id_film"
-            # grâce à la variable "id_film_genres_edit_html" dans le fichier "films_genres_afficher.html"
-            # href="{{ url_for('edit_genre_film_selected', id_film_genres_edit_html=row.id_film) }}"
-            id_film_genres_edit = request.values['id_film_genres_edit_html']
+                # Sélection des informations du client
+                id_client = request.values['id_client']
+                strsql_client = """SELECT id_client, nom, prenom, adresse, telephone, email, id_employer 
+                                   FROM t_client WHERE id_client = %(id_client)s"""
+                mc_afficher.execute(strsql_client, {'id_client': id_client})
+                data_client = mc_afficher.fetchone()
+                print("Client sélectionné :", data_client)
 
-            # Mémorise l'id du film dans une variable de session
-            # (ici la sécurité de l'application n'est pas engagée)
-            # il faut éviter de stocker des données sensibles dans des variables de sessions.
-            session['session_id_film_genres_edit'] = id_film_genres_edit
+        except Exception as e:
+            raise Exception(f"Erreur lors de la sélection des employés et du client: {e}")
 
-            # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-            valeur_id_film_selected_dictionnaire = {"value_id_film_selected": id_film_genres_edit}
+    if request.method == "POST":
+        try:
+            # Récupérer les valeurs du formulaire
+            id_employer = request.form['id_employer']
+            nom = request.form['nom']
+            prenom = request.form['prenom']
+            adresse = request.form['adresse']
+            telephone = request.form['telephone']
+            email = request.form['email']
 
-            # Récupère les données grâce à 3 requêtes MySql définie dans la fonction genres_films_afficher_data
-            # 1) Sélection du film choisi
-            # 2) Sélection des genres "déjà" attribués pour le film.
-            # 3) Sélection des genres "pas encore" attribués pour le film choisi.
-            # ATTENTION à l'ordre d'assignation des variables retournées par la fonction "genres_films_afficher_data"
-            data_genre_film_selected, data_genres_films_non_attribues, data_genres_films_attribues = \
-                genres_films_afficher_data(valeur_id_film_selected_dictionnaire)
+            # Requête pour mettre à jour les informations du client
+            strsql_update_client = """UPDATE t_client 
+                                      SET nom = %(nom)s, prenom = %(prenom)s, adresse = %(adresse)s, 
+                                          telephone = %(telephone)s, email = %(email)s, id_employer = %(id_employer)s 
+                                      WHERE id_client = %(id_client)s"""
+            with DBconnection() as mc_modif:
+                mc_modif.execute(strsql_update_client, {
+                    'nom': nom,
+                    'prenom': prenom,
+                    'adresse': adresse,
+                    'telephone': telephone,
+                    'email': email,
+                    'id_employer': id_employer,
+                    'id_client': id_client
+                })
 
-            print(data_genre_film_selected)
-            lst_data_film_selected = [item['id_film'] for item in data_genre_film_selected]
-            print("lst_data_film_selected  ", lst_data_film_selected,
-                  type(lst_data_film_selected))
+        except Exception as e:
+            raise Exception(f"Erreur lors de la mise à jour du client: {e}")
 
-            # Dans le composant "tags-selector-tagselect" on doit connaître
-            # les genres qui ne sont pas encore sélectionnés.
-            lst_data_genres_films_non_attribues = [item['id_genre'] for item in data_genres_films_non_attribues]
-            session['session_lst_data_genres_films_non_attribues'] = lst_data_genres_films_non_attribues
-            print("lst_data_genres_films_non_attribues  ", lst_data_genres_films_non_attribues,
-                  type(lst_data_genres_films_non_attribues))
-
-            # Dans le composant "tags-selector-tagselect" on doit connaître
-            # les genres qui sont déjà sélectionnés.
-            lst_data_genres_films_old_attribues = [item['id_genre'] for item in data_genres_films_attribues]
-            session['session_lst_data_genres_films_old_attribues'] = lst_data_genres_films_old_attribues
-            print("lst_data_genres_films_old_attribues  ", lst_data_genres_films_old_attribues,
-                  type(lst_data_genres_films_old_attribues))
-
-            print(" data data_genre_film_selected", data_genre_film_selected, "type ", type(data_genre_film_selected))
-            print(" data data_genres_films_non_attribues ", data_genres_films_non_attribues, "type ",
-                  type(data_genres_films_non_attribues))
-            print(" data_genres_films_attribues ", data_genres_films_attribues, "type ",
-                  type(data_genres_films_attribues))
-
-            # Extrait les valeurs contenues dans la table "t_genres", colonne "intitule_genre"
-            # Le composant javascript "tagify" pour afficher les tags n'a pas besoin de l'id_genre
-            lst_data_genres_films_non_attribues = [item['intitule_genre'] for item in data_genres_films_non_attribues]
-            print("lst_all_genres gf_edit_genre_film_selected ", lst_data_genres_films_non_attribues,
-                  type(lst_data_genres_films_non_attribues))
-
-        except Exception as Exception_edit_genre_film_selected:
-            raise ExceptionEditGenreFilmSelected(f"fichier : {Path(__file__).name}  ;  "
-                                                 f"{edit_genre_film_selected.__name__} ; "
-                                                 f"{Exception_edit_genre_film_selected}")
-
-    return render_template("films_genres/films_genres_modifier_tags_dropbox.html",
-                           data_genres=data_genres_all,
-                           data_film_selected=data_genre_film_selected,
-                           data_genres_attribues=data_genres_films_attribues,
-                           data_genres_non_attribues=data_genres_films_non_attribues)
-
+    return render_template("clients_employes/clients_employes_edit.html",
+                           data_employes=data_employes,
+                           data_client=data_client)
 
 """
     nom: update_genre_film_selected
