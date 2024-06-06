@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- Hôte:                         127.0.0.1
--- Version du serveur:           8.0.30 - MySQL Community Server - GPL
--- SE du serveur:                Win64
+-- Host:                         127.0.0.1
+-- Server version:               8.0.30 - MySQL Community Server - GPL
+-- Server OS:                    Win64
 -- HeidiSQL Version:             12.1.0.6537
 -- --------------------------------------------------------
 
@@ -15,12 +15,12 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Listage de la structure de la base pour ecuyer_gregory_expi1a_chauffage_164_2024
+-- Dumping database structure for ecuyer_gregory_expi1a_chauffage_164_2024
 DROP DATABASE IF EXISTS `ecuyer_gregory_expi1a_chauffage_164_2024`;
 CREATE DATABASE IF NOT EXISTS `ecuyer_gregory_expi1a_chauffage_164_2024` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `ecuyer_gregory_expi1a_chauffage_164_2024`;
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_client
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client
 DROP TABLE IF EXISTS `t_client`;
 CREATE TABLE IF NOT EXISTS `t_client` (
   `id_client` int NOT NULL AUTO_INCREMENT,
@@ -29,28 +29,30 @@ CREATE TABLE IF NOT EXISTS `t_client` (
   `adresse` varchar(100) DEFAULT NULL,
   `telephone` varchar(20) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id_client`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+  `id_employer` int DEFAULT NULL,
+  PRIMARY KEY (`id_client`),
+  KEY `FK_client_avoir_employer` (`id_employer`) USING BTREE,
+  CONSTRAINT `FK_client_avoir_employer` FOREIGN KEY (`id_employer`) REFERENCES `t_employer` (`id_employer`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_client : ~15 rows (environ)
-INSERT INTO `t_client` (`id_client`, `nom`, `prenom`, `adresse`, `telephone`, `email`) VALUES
-	(1, 'Ecuyer', 'Gregory', 'Rue des Liserons, 3', '0792534321', 'gregorycarvalho3@gmail.com'),
-	(2, 'Valente', 'Catarina', 'General Guison', '', NULL),
-	(3, 'Rama', 'Adrian', NULL, NULL, NULL),
-	(4, 'Dubois', 'Marie', 'Avenue des Champs', '0781234567', 'marie.dubois@example.com'),
-	(5, 'Garcia', 'Pablo', 'Calle de la Rosa, 12', '', 'pablo.garcia@example.com'),
-	(6, 'Müller', 'Sophie', 'Via Roma 1', '0765432198', 'sophie.mueller@example.com'),
-	(7, 'Rossi', 'Giuseppe', 'Via Roma, 10', '', 'giuseppe.rossi@example.com'),
-	(8, 'Petrov', 'Ivan', 'Via Roma, 15', '0998765432', 'ivan.petrov@example.com'),
-	(9, 'Smith', 'John', '123 Main Street', '0712345678', 'john.smith@example.com'),
-	(10, 'Chen', 'Wei', '456 Zhongshan Road', '', 'wei.chen@example.com'),
-	(11, 'Kumar', 'Priya', '789 Gandhi Marg', '0801234567', 'priya.kumar@example.com'),
-	(12, 'Johnson', 'Emily', '456 Elm Street', '', 'emily.johnson@example.com'),
-	(13, 'Kim', 'Min-Joon', '123 Gangnam-gu Street', '0709876543', 'minjoon.kim@example.com'),
-	(14, 'Hernandez', 'Maria', '789 Avenida de Mayo', '', 'maria.hernandez@example.com'),
-	(15, 'Yamamoto', 'Takeshi', '123 Ginza', '0812345678', 'takeshi.yamamoto@example.com');
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client: ~14 rows (approximately)
+INSERT INTO `t_client` (`id_client`, `nom`, `prenom`, `adresse`, `telephone`, `email`, `id_employer`) VALUES
+	(1, 'Ecuyer', 'Gregory', 'Rue des Liserons, 3', '0792534321', 'gregorycarvalho3@gmail.com', NULL),
+	(2, 'Valente', 'Catarina', 'General Guison', '', NULL, NULL),
+	(3, 'Rama', 'Adrian', 'Aigle', '', 'rama@blader.com', NULL),
+	(4, 'Dubois', 'Marie', 'Avenue des Champs', '0781234567', 'marie.dubois@example.com', NULL),
+	(5, 'Garcia', 'Pablo', 'Calle de la Rosa, 12', '', 'pablo.garcia@example.com', NULL),
+	(6, 'Müller', 'Sophie', 'Via Roma 1', '0765432198', 'sophie.mueller@example.com', NULL),
+	(7, 'Rossi', 'Giuseppe', 'Via Roma, 10', '', 'giuseppe.rossi@example.com', NULL),
+	(8, 'Petrov', 'Ivan', 'Via Roma, 15', '0998765432', 'ivan.petrov@example.com', NULL),
+	(9, 'Smith', 'John', '123 Main Street', '0712345678', 'john.smith@example.com', NULL),
+	(10, 'Chen', 'Wei', '456 Zhongshan Road', '', 'wei.chen@example.com', NULL),
+	(11, 'Kumar', 'Priya', '789 Gandhi Marg', '0801234567', 'priya.kumar@example.com', NULL),
+	(12, 'Johnson', 'Emili', '456 Elm Street', '', 'emily.johnson@example.com', NULL),
+	(13, 'Kim', 'Min-Joon', '123 Gangnam-gu Street', '0709876543', 'minjoon.kim@example.com', NULL),
+	(15, 'Yamamoy', 'Takey', '123 Ginyo', '0812345679', 'takeshi.yamamoto@hotmail.com', NULL);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_client_avoir_t_facturation
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_facturation
 DROP TABLE IF EXISTS `t_client_avoir_t_facturation`;
 CREATE TABLE IF NOT EXISTS `t_client_avoir_t_facturation` (
   `fk_client` int NOT NULL,
@@ -61,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `t_client_avoir_t_facturation` (
   CONSTRAINT `t_facturation_avoir_t_client` FOREIGN KEY (`fk_facturation`) REFERENCES `t_facturation` (`id_facture`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_facturation : ~17 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_facturation: ~16 rows (approximately)
 INSERT INTO `t_client_avoir_t_facturation` (`fk_client`, `fk_facturation`) VALUES
 	(2, 2),
 	(1, 1),
@@ -78,10 +80,9 @@ INSERT INTO `t_client_avoir_t_facturation` (`fk_client`, `fk_facturation`) VALUE
 	(11, 13),
 	(12, 14),
 	(13, 15),
-	(14, 16),
 	(15, 17);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_client_avoir_t_installation
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_installation
 DROP TABLE IF EXISTS `t_client_avoir_t_installation`;
 CREATE TABLE IF NOT EXISTS `t_client_avoir_t_installation` (
   `fk_client` int NOT NULL,
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `t_client_avoir_t_installation` (
   CONSTRAINT `t_installation_avoir_t_client` FOREIGN KEY (`fk_installation`) REFERENCES `t_installation` (`id_installation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_installation : ~18 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_client_avoir_t_installation: ~17 rows (approximately)
 INSERT INTO `t_client_avoir_t_installation` (`fk_client`, `fk_installation`) VALUES
 	(1, 1),
 	(2, 1),
@@ -110,10 +111,9 @@ INSERT INTO `t_client_avoir_t_installation` (`fk_client`, `fk_installation`) VAL
 	(11, 13),
 	(12, 14),
 	(13, 15),
-	(14, 16),
 	(15, 17);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_consommation
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_consommation
 DROP TABLE IF EXISTS `t_consommation`;
 CREATE TABLE IF NOT EXISTS `t_consommation` (
   `id_consommation` int NOT NULL AUTO_INCREMENT,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `t_consommation` (
   CONSTRAINT `t_consommation_avoir_t_installation` FOREIGN KEY (`fk_installation`) REFERENCES `t_installation` (`id_installation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=353 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_consommation : ~17 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_consommation: ~17 rows (approximately)
 INSERT INTO `t_consommation` (`id_consommation`, `fk_installation`, `fk_combustible`, `date_releve`, `consommation`, `temperature`, `efficacite_energetique`) VALUES
 	(1, NULL, NULL, '2024-01-25', 2.50, 5.00, 3.00),
 	(2, NULL, NULL, '2024-02-01', 3.20, 6.50, 4.00),
@@ -150,21 +150,21 @@ INSERT INTO `t_consommation` (`id_consommation`, `fk_installation`, `fk_combusti
 	(16, NULL, NULL, '2024-02-15', 3.20, 6.70, 4.00),
 	(17, NULL, NULL, '2024-02-16', 2.90, 5.70, 3.60);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_employer
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_employer
 DROP TABLE IF EXISTS `t_employer`;
 CREATE TABLE IF NOT EXISTS `t_employer` (
   `id_employer` int NOT NULL AUTO_INCREMENT,
-  `prenom` varchar(50) DEFAULT NULL,
-  `nom` varchar(50) DEFAULT NULL,
+  `prenom_employer` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `nom_employer` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   PRIMARY KEY (`id_employer`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_employer : ~2 rows (environ)
-INSERT INTO `t_employer` (`id_employer`, `prenom`, `nom`) VALUES
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_employer: ~2 rows (approximately)
+INSERT INTO `t_employer` (`id_employer`, `prenom_employer`, `nom_employer`) VALUES
 	(1, 'Johann', 'Ecuyer'),
 	(2, 'André', 'Ecuyer');
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_facturation
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_facturation
 DROP TABLE IF EXISTS `t_facturation`;
 CREATE TABLE IF NOT EXISTS `t_facturation` (
   `id_facture` int NOT NULL AUTO_INCREMENT,
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `t_facturation` (
   CONSTRAINT `t_facturation_avoir_installation_t_installation` FOREIGN KEY (`fk_installation`) REFERENCES `t_installation` (`id_installation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_facturation : ~17 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_facturation: ~17 rows (approximately)
 INSERT INTO `t_facturation` (`id_facture`, `fk_client`, `fk_installation`, `montant`, `date_facturation`, `statut_paiement`, `historique_paiements`) VALUES
 	(1, 1, 1, 250.00, '2024-01-31', 'Pas payé', NULL),
 	(2, 2, 1, 350.00, '2024-02-07', 'Payé', NULL),
@@ -200,7 +200,7 @@ INSERT INTO `t_facturation` (`id_facture`, `fk_client`, `fk_installation`, `mont
 	(16, 14, 16, 1000.00, '2024-09-20', 'Pas payé', NULL),
 	(17, 15, 17, 1050.00, '2024-10-05', 'En attente', NULL);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_installation
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_installation
 DROP TABLE IF EXISTS `t_installation`;
 CREATE TABLE IF NOT EXISTS `t_installation` (
   `id_installation` int NOT NULL AUTO_INCREMENT,
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `t_installation` (
   CONSTRAINT `t_installation_avoir_client_t_client` FOREIGN KEY (`fk_client`) REFERENCES `t_client` (`id_client`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_installation : ~19 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_installation: ~19 rows (approximately)
 INSERT INTO `t_installation` (`id_installation`, `fk_client`, `combustible`, `type_chauffage`, `modele_chauffage`, `date_installation`, `capacite`, `marque`, `puissance`, `fournisseur`) VALUES
 	(1, 1, NULL, 'Electrique', 'NL50', '2024-01-16', '1000Litres', NULL, NULL, NULL),
 	(2, 2, 2, 'Gaz', 'GX200', '2024-02-25', '500Litres', NULL, NULL, NULL),
@@ -241,7 +241,7 @@ INSERT INTO `t_installation` (`id_installation`, `fk_client`, `combustible`, `ty
 	(18, 9, NULL, 'Electrique', 'EL300', '2024-09-20', '1100Litres', NULL, NULL, NULL),
 	(19, 10, NULL, 'Fioul', 'FO900', '2024-10-05', '1800Litres', NULL, NULL, NULL);
 
--- Listage de la structure de table ecuyer_gregory_expi1a_chauffage_164_2024. t_maintenance
+-- Dumping structure for table ecuyer_gregory_expi1a_chauffage_164_2024.t_maintenance
 DROP TABLE IF EXISTS `t_maintenance`;
 CREATE TABLE IF NOT EXISTS `t_maintenance` (
   `id_maintenance` int NOT NULL AUTO_INCREMENT,
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `t_maintenance` (
   CONSTRAINT `t_maintenance_avoir_installation_t_installation` FOREIGN KEY (`fk_installation`) REFERENCES `t_installation` (`id_installation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table ecuyer_gregory_expi1a_chauffage_164_2024.t_maintenance : ~17 rows (environ)
+-- Dumping data for table ecuyer_gregory_expi1a_chauffage_164_2024.t_maintenance: ~17 rows (approximately)
 INSERT INTO `t_maintenance` (`id_maintenance`, `fk_installation`, `date_maintenance`, `description`, `pieces_remplacees`, `cout`, `tache_employer`) VALUES
 	(1, 1, '2024-02-28', 'Test', 'Chaudière', 15000.00, 1),
 	(2, 2, '2024-03-15', 'Réparation du chauffage', 'Thermostat', 8000.00, 2),

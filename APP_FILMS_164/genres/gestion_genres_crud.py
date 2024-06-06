@@ -212,6 +212,7 @@ def genre_update_wtf():
                     form_update.adresse_update_wtf.data = data_nom_genre["adresse"]
                     form_update.telephone_update_wtf.data = data_nom_genre["telephone"]
                     form_update.email_update_wtf.data = data_nom_genre["email"]
+
                 else:
                     flash(f"Aucun client trouvé pour l'ID {id_genre_update}", "warning")
                     return redirect(url_for('genres_afficher', order_by='DESC', id_genre_sel=0))

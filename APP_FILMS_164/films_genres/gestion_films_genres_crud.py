@@ -28,48 +28,51 @@ from APP_FILMS_164.erreurs.exceptions import *
 
 @app.route("/films_genres_afficher/<int:id_film_sel>", methods=['GET', 'POST'])
 def films_genres_afficher(id_film_sel):
-    print(" films_genres_afficher id_film_sel ", id_film_sel)
+    print("films_genres_afficher id_film_sel", id_film_sel)
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                strsql_genres_films_afficher_data = """SELECT id_film, nom_film, duree_film, description_film, cover_link_film, date_sortie_film,
-                                                            GROUP_CONCAT(intitule_genre) as GenresFilms FROM t_genre_film
-                                                            RIGHT JOIN t_film ON t_film.id_film = t_genre_film.fk_film
-                                                            LEFT JOIN t_genre ON t_genre.id_genre = t_genre_film.fk_genre
-                                                            GROUP BY id_film"""
-                if id_film_sel == 0:
-                    # le paramètre 0 permet d'afficher tous les films
-                    # Sinon le paramètre représente la valeur de l'id du film
-                    mc_afficher.execute(strsql_genres_films_afficher_data)
-                else:
-                    # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-                    valeur_id_film_selected_dictionnaire = {"value_id_film_selected": id_film_sel}
-                    # En MySql l'instruction HAVING fonctionne comme un WHERE... mais doit être associée à un GROUP BY
-                    # L'opérateur += permet de concaténer une nouvelle valeur à la valeur de gauche préalablement définie.
-                    strsql_genres_films_afficher_data += """ HAVING id_film= %(value_id_film_selected)s"""
-
-                    mc_afficher.execute(strsql_genres_films_afficher_data, valeur_id_film_selected_dictionnaire)
-
-                # Récupère les données de la requête.
+                strsql_genres_films_afficher_data = """SELECT 
+    t_employer.id_employer,
+    t_employer.prenom_employer,
+    t_employer.nom_employer,
+    t_client.id_client,
+    t_client.nom AS nom_client,
+    t_client.prenom AS prenom_client,
+    t_client.adresse,
+    t_client.telephone,
+    t_client.email,
+    t_installation.id_installation,
+    t_installation.type_chauffage,
+    t_installation.modele_chauffage,
+    t_installation.date_installation
+FROM 
+    t_employer
+LEFT JOIN 
+    t_maintenance ON t_employer.id_employer = t_maintenance.tache_employer
+LEFT JOIN 
+    t_installation ON t_maintenance.fk_installation = t_installation.id_installation
+LEFT JOIN 
+    t_client ON t_installation.fk_client = t_client.id_client
+ORDER BY 
+    t_employer.nom_employer, t_employer.prenom_employer, t_client.nom, t_client.prenom;
+"""
+                mc_afficher.execute(strsql_genres_films_afficher_data)
                 data_genres_films_afficher = mc_afficher.fetchall()
                 print("data_genres ", data_genres_films_afficher, " Type : ", type(data_genres_films_afficher))
 
-                # Différencier les messages.
-                if not data_genres_films_afficher and id_film_sel == 0:
-                    flash("""La table "t_film" est vide. !""", "warning")
-                elif not data_genres_films_afficher and id_film_sel > 0:
-                    # Si l'utilisateur change l'id_film dans l'URL et qu'il ne correspond à aucun film
-                    flash(f"Le film {id_film_sel} demandé n'existe pas !!", "warning")
+                if not data_genres_films_afficher:
+                    flash("Aucune donnée trouvée!", "warning")
                 else:
-                    flash(f"Données films et genres affichés !!", "success")
+                    flash("Données affichées avec succès!", "success")
 
         except Exception as Exception_films_genres_afficher:
             raise ExceptionFilmsGenresAfficher(f"fichier : {Path(__file__).name}  ;  {films_genres_afficher.__name__} ;"
                                                f"{Exception_films_genres_afficher}")
 
     print("films_genres_afficher  ", data_genres_films_afficher)
-    # Envoie la page "HTML" au serveur.
     return render_template("films_genres/films_genres_afficher.html", data=data_genres_films_afficher)
+
 
 
 """
@@ -93,7 +96,7 @@ def edit_genre_film_selected():
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                strsql_genres_afficher = """SELECT id_genre, intitule_genre FROM t_genre ORDER BY id_genre ASC"""
+                strsql_genres_afficher = """SELECT id_employer, id_employer FROM t_client ORDER BY id_employer ASC"""
                 mc_afficher.execute(strsql_genres_afficher)
             data_genres_all = mc_afficher.fetchall()
             print("dans edit_genre_film_selected ---> data_genres_all", data_genres_all)
