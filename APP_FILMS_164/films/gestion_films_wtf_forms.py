@@ -28,28 +28,20 @@ class FormWTFAddFilm(FlaskForm):
     submit = SubmitField("Enregistrer film")
 
 
+
 class FormWTFUpdateFilm(FlaskForm):
     """
-        Dans le formulaire "film_update_wtf.html" on impose que le champ soit rempli.
+        Dans le formulaire "client_update_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
+    nom_client_update_wtf = StringField("Nom du client", validators=[DataRequired("Nom obligatoire")], widget=TextArea())
+    prenom_client_update_wtf = StringField("Prénom du client", validators=[DataRequired("Prénom obligatoire")], widget=TextArea())
+    adresse_client_update_wtf = StringField("Adresse du client", validators=[DataRequired("Adresse obligatoire")], widget=TextArea())
+    telephone_client_update_wtf = StringField("Téléphone du client", validators=[DataRequired("Téléphone obligatoire")], widget=TextArea())
+    email_client_update_wtf = StringField("Email du client", validators=[DataRequired("Email obligatoire")], widget=TextArea())
+    id_employer_client_update_wtf = IntegerField("ID de l'employé", validators=[NumberRange(min=1, message="ID de l'employé obligatoire et doit être un nombre positif")])
+    submit = SubmitField("Mettre à jour le client")
 
-    nom_film_update_wtf = StringField("Clavioter le titre", widget=TextArea())
-    duree_film_update_wtf = IntegerField("Durée du film (minutes)", validators=[NumberRange(min=1, max=5000,
-                                                                                            message=u"Min %(min)d et "
-                                                                                                    u"max %(max)d "
-                                                                                                    u"Selon Wikipédia "
-                                                                                                    u"L'Incendie du "
-                                                                                                    u"monastère du "
-                                                                                                    u"Lotus rouge "
-                                                                                                    u"durée 1620 "
-                                                                                                    u"min")])
-
-    description_film_update_wtf = StringField("Description du film ", widget=TextArea())
-    cover_link_film_update_wtf = StringField("Lien de l'affiche du film ", widget=TextArea())
-    datesortie_film_update_wtf = DateField("Date de sortie du film", validators=[InputRequired("Date obligatoire"),
-                                                                                 DataRequired("Date non valide")])
-    submit = SubmitField("Update film")
 
 
 class FormWTFDeleteFilm(FlaskForm):
