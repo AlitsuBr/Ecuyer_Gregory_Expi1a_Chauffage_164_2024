@@ -136,7 +136,8 @@ def film_update_wtf():
                                      f"{film_update_wtf.__name__} ; "
                                      f"{Exception_client_update_wtf}")
 
-    return render_template("genres/genre_update_wtf.html", form_update=form_update_client)
+    # return render_template("genres/genre_update_wtf.html", form_update=form_update_client)
+    return render_template("films/film_update_wtf.html", form_update_client=form_update_client)
 
 
 

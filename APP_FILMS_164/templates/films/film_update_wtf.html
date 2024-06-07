@@ -46,15 +46,9 @@
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
-                    <p>
-                        {{ form_update_client.id_employer_client_update_wtf.label }}<br>
-                        {{ form_update_client.id_employer_client_update_wtf(size=32) }}<br>
-                        {% for error in form_update_client.id_employer_client_update_wtf.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
+
 				</div>
-				{{ form_update_film.submit(class="btn btn-primary") }}
+				{{ form_update_client.submit(class="btn btn-primary") }}
 			</form>
 		</div>
 	</div>
