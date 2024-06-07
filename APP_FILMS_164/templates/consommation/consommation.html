@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} Consommation {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Table Consommation</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Consommation</th>
+                <th>FK Installation</th>
+                <th>FK Combustible</th>
+                <th>Date Relevé</th>
+                <th>Consommation</th>
+                <th>Température</th>
+                <th>Efficacité Énergétique</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.id_consommation }}</td>
+                <td>{{ row.fk_installation }}</td>
+                <td>{{ row.fk_combustible }}</td>
+                <td>{{ row.date_releve }}</td>
+                <td>{{ row.consommation }}</td>
+                <td>{{ row.temperature }}</td>
+                <td>{{ row.efficacite_energetique }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

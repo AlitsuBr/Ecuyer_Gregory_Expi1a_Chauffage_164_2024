@@ -117,11 +117,10 @@ def edit_genre_film_selected():
         try:
             # Récupérer les valeurs du formulaire
             id_employer = request.form['id_employer']
-            nom = request.form['nom']
-            prenom = request.form['prenom']
-            adresse = request.form['adresse']
-            telephone = request.form['telephone']
-            email = request.form['email']
+            nom = request.form['nom_employer']
+            prenom = request.form['prenom_employer']
+
+
 
             # Requête pour mettre à jour les informations du client
             strsql_update_client = """UPDATE t_client 
@@ -132,9 +131,6 @@ def edit_genre_film_selected():
                 mc_modif.execute(strsql_update_client, {
                     'nom': nom,
                     'prenom': prenom,
-                    'adresse': adresse,
-                    'telephone': telephone,
-                    'email': email,
                     'id_employer': id_employer,
                     'id_client': id_client
                 })
@@ -142,7 +138,7 @@ def edit_genre_film_selected():
         except Exception as e:
             raise Exception(f"Erreur lors de la mise à jour du client: {e}")
 
-    return render_template("clients_employes/clients_employes_edit.html",
+    return render_template("films_genres/films_genres_edit.html",
                            data_employes=data_employes,
                            data_client=data_client)
 

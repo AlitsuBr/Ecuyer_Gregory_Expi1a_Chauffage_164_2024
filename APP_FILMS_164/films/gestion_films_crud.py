@@ -76,29 +76,28 @@ Remarque :  Dans le champ "nom_film_update_wtf" du formulaire "films/films_updat
 
 @app.route("/film_update", methods=['GET', 'POST'])
 def film_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_client"
-    id_client_update = request.values['id_film_btn_edit_html']
+    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_film"
+    id_film_update = request.values['id_film_btn_edit_html']
 
     # Objet formulaire pour l'UPDATE
-    form_update_client = FormWTFUpdateFilm()
+    form_update_client = FormWTFUpdateFilm()  # Utilisation du formulaire correct
     try:
+        # S'il y a des listes déroulantes dans le formulaire, la validation pose quelques problèmes
         if request.method == "POST" and form_update_client.submit.data:
-            # Récupérer les valeurs des champs du formulaire
+            # Récupérer les valeurs des champs depuis le formulaire après avoir cliqué sur "SUBMIT".
             nom_client_update = form_update_client.nom_client_update_wtf.data
             prenom_client_update = form_update_client.prenom_client_update_wtf.data
             adresse_client_update = form_update_client.adresse_client_update_wtf.data
             telephone_client_update = form_update_client.telephone_client_update_wtf.data
             email_client_update = form_update_client.email_client_update_wtf.data
-            id_employer_client_update = form_update_client.id_employer_client_update_wtf.data
 
             valeur_update_dictionnaire = {
-                "value_id_client": id_client_update,
+                "value_id_client": id_film_update,
                 "value_nom_client": nom_client_update,
                 "value_prenom_client": prenom_client_update,
                 "value_adresse_client": adresse_client_update,
                 "value_telephone_client": telephone_client_update,
-                "value_email_client": email_client_update,
-                "value_id_employer_client": id_employer_client_update
+                "value_email_client": email_client_update
             }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
@@ -106,38 +105,38 @@ def film_update_wtf():
                                                            prenom = %(value_prenom_client)s,
                                                            adresse = %(value_adresse_client)s,
                                                            telephone = %(value_telephone_client)s,
-                                                           email = %(value_email_client)s,
-                                                           id_employer = %(value_id_employer_client)s
+                                                           email = %(value_email_client)s
                                                        WHERE id_client = %(value_id_client)s"""
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_client, valeur_update_dictionnaire)
 
             flash(f"Donnée mise à jour !!", "success")
             print(f"Donnée mise à jour !!")
-            return redirect(url_for('clients_afficher', id_client_sel=id_client_update))
+
+            # Afficher seulement le client modifié
+            return redirect(url_for('genres_afficher', order_by='ASC', id_genre_sel=id_film_update))
         elif request.method == "GET":
+            # Opération sur la BD pour récupérer les détails du client
             str_sql_id_client = "SELECT * FROM t_client WHERE id_client = %(value_id_client)s"
-            valeur_select_dictionnaire = {"value_id_client": id_client_update}
+            valeur_select_dictionnaire = {"value_id_client": id_film_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_client, valeur_select_dictionnaire)
             data_client = mybd_conn.fetchone()
             print("data_client ", data_client, " type ", type(data_client))
 
+            # Afficher la valeur sélectionnée dans le champ du formulaire "film_update_wtf.html"
             form_update_client.nom_client_update_wtf.data = data_client["nom"]
             form_update_client.prenom_client_update_wtf.data = data_client["prenom"]
             form_update_client.adresse_client_update_wtf.data = data_client["adresse"]
             form_update_client.telephone_client_update_wtf.data = data_client["telephone"]
             form_update_client.email_client_update_wtf.data = data_client["email"]
-            form_update_client.id_employer_client_update_wtf.data = data_client["id_employer"]
 
     except Exception as Exception_client_update_wtf:
         raise ExceptionFilmUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                      f"{film_update_wtf.__name__} ; "
                                      f"{Exception_client_update_wtf}")
 
-    return render_template("films/film_update_wtf.html", form_update_film=form_update_client)
-
-
+    return render_template("genres/genre_update_wtf.html", form_update=form_update_client)
 
 
 
